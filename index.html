@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevOps Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Fira Code', monospace;
+      background-color: #121212;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      font-size: 2.5em;
+      color: #00d8a7;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .card h2 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #00bfff;
+    }
+    canvas {
+      background-color: #2a2a2a;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .status {
+      font-size: 1em;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .status.green {
+      background-color: #2e7d32;
+    }
+    .status.red {
+      background-color: #c62828;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛠️ DevOps Dashboard</h1>
+    <p>Monitoring | Deployment | Automation</p>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>CPU Usage</h2>
+      <canvas id="cpuChart" height="120"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Memory Usage</h2>
+      <canvas id="memoryChart" height="120"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Deployment Status</h2>
+      <p class="status green">✔️ All systems operational</p>
+    </div>
+
+    <div class="card">
+      <h2>Containers</h2>
+      <ul>
+        <li>🟢 Nginx (Running)</li>
+        <li>🟢 Redis (Running)</li>
+        <li>🔴 MongoDB (Stopped)</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <p id="footerText">© 2025 DevOps Monitor | Powered by Nginx</p>
+  </footer>
+
+  <script>
+    const ctx1 = document.getElementById('cpuChart').getContext('2d');
+    const ctx2 = document.getElementById('memoryChart').getContext('2d');
+
+    const cpuChart = new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: ['1m', '5m', '10m', '15m', '30m', '1h'],
+        datasets: [{
+          label: 'CPU %',
+          data: [10, 20, 15, 25, 30, 40],
+          backgroundColor: 'rgba(0,216,167,0.2)',
+          borderColor: '#00d8a7',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#ccc' }
+          },
+          x: {
+            ticks: { color: '#ccc' }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: '#ccc' }
+          }
+        }
+      }
+    });
+
+    const memoryChart = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: ['1m', '5m', '10m', '15m', '30m', '1h'],
+        datasets: [{
+          label: 'Memory %',
+          data: [30, 35, 40, 38, 45, 50],
+          backgroundColor: 'rgba(0,191,255,0.2)',
+          borderColor: '#00bfff',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#ccc' }
+          },
+          x: {
+            ticks: { color: '#ccc' }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: '#ccc' }
+          }
+        }
+      }
+    });
+
+    // Fetch and display hostname
+    fetch('/hostname.txt')
+      .then(response => response.text())
+      .then(hostname => {
+        document.getElementById('footerText').textContent += ` | Hostname: ${hostname.trim()}`;
+      })
+      .catch(error => {
+        console.error('Could not fetch hostname:', error);
+      });
+  </script>
+</body>
+</html>
