@@ -1,4 +1,4 @@
-FROM nginx:alpine
-COPY index.html /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM alpine:latest
+COPY test.sh /test.sh
+RUN chmod +x /test.sh
+CMD ["/test.sh"]
